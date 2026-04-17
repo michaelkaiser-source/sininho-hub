@@ -1,135 +1,166 @@
--- =======================
+-- GARANTE QUE CARREGOU
+repeat task.wait() until game.Players.LocalPlayer
+repeat task.wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+
+local player = game.Players.LocalPlayer
+
 -- POSIÇÕES
--- =======================
+local brainrotPosition = Vector3.new(-812.01, 18, -346.84)
 local basePosition      = Vector3.new(-819.31, 15, -385.16)
-local ogPosition        = Vector3.new(-819.57, 1217, 2617.97)
-local divinePosition    = Vector3.new(-819.57, 801, 2019.97)
+local divinePosition    = Vector3.new(-819.57, 1225, 2957.97)
+local celestialPosition = Vector3.new(-819.57, 801, 2019.97)
 local secretPosition    = Vector3.new(-819.57, 470.5, 1485.47)
 local cosmicPosition    = Vector3.new(-819.57, 290.5, 1004.97)
 local mythicalPosition  = Vector3.new(-819.57, 165.5, 651.97)
-local legendaryPosition = Vector3.new(-819.57, 94.5, 380.47) -- MUDA SE PRECISAR
+local legendaryPosition = Vector3.new(-819.57, 88.5, 180)
 local epicPosition      = Vector3.new(-819.57, 101, 155.47)
 
--- PLAYER
-local player = game.Players.LocalPlayer
-
--- =======================
--- PARTS VISUAIS
--- =======================
-local function createPart(pos, color, name)
-    local p = Instance.new("Part")
-    p.Size = Vector3.new(6,1,6)
-    p.Color = color
-    p.Material = Enum.Material.Neon
-    p.Anchored = true
-    p.CanCollide = false
-    p.Position = pos
-    p.Name = name
-    p.Parent = workspace
-end
-
-createPart(basePosition, Color3.fromRGB(120,120,120), "BaseArea")
-createPart(ogPosition, Color3.fromRGB(255,140,0), "OGArea")
-createPart(divinePosition, Color3.fromRGB(0,255,255), "DivineArea")
-createPart(secretPosition, Color3.fromRGB(150,150,150), "SecretArea")
-createPart(cosmicPosition, Color3.fromRGB(170,0,255), "CosmicArea")
-createPart(mythicalPosition, Color3.fromRGB(255,100,200), "MythicalArea")
-createPart(legendaryPosition, Color3.fromRGB(255,215,0), "LegendaryArea")
-createPart(epicPosition, Color3.fromRGB(90,0,150), "EpicArea")
-
--- =======================
--- GUI HUB
--- =======================
+-- GUI
 local gui = Instance.new("ScreenGui")
-gui.Parent = game.CoreGui
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 260, 0, 620)
-frame.Position = UDim2.new(0.5, -130, 0.5, -310)
-frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+-- FRAME
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 280, 0, 680)
+frame.Position = UDim2.new(0.5, -140, 0.5, -340)
+frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
 frame.BorderSizePixel = 0
-frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,15)
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 12)
-corner.Parent = frame
+-- TOP BAR
+local topBar = Instance.new("Frame", frame)
+topBar.Size = UDim2.new(1,0,0,45)
+topBar.BackgroundTransparency = 1
 
--- TÍTULO
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1,0,0,40)
+local title = Instance.new("TextLabel", topBar)
+title.Size = UDim2.new(1,-50,1,0)
+title.Position = UDim2.new(0,10,0,0)
 title.BackgroundTransparency = 1
 title.Text = "Sininho Hub"
 title.TextScaled = true
-title.TextColor3 = Color3.fromRGB(255,255,255)
 title.Font = Enum.Font.GothamBold
-title.Parent = frame
+title.TextColor3 = Color3.fromRGB(255,255,255)
 
--- FUNÇÃO BOTÃO
-local function createButton(text, posY, color, textColor)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 200, 0, 60)
-    btn.Position = UDim2.new(0.5, -100, 0, posY)
-    btn.BackgroundColor3 = color
-    btn.Text = text
-    btn.TextScaled = true
-    btn.TextColor3 = textColor
-    btn.Font = Enum.Font.GothamBold
-    btn.Parent = frame
-    return btn
+-- MINIMIZAR
+local minimizeBtn = Instance.new("TextButton", topBar)
+minimizeBtn.Size = UDim2.new(0,35,0,35)
+minimizeBtn.Position = UDim2.new(1,-40,0,5)
+minimizeBtn.Text = "-"
+minimizeBtn.TextScaled = true
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(1,0)
+
+-- SCROLL
+local scroll = Instance.new("ScrollingFrame", frame)
+scroll.Size = UDim2.new(1,-10,1,-50)
+scroll.Position = UDim2.new(0,5,0,45)
+scroll.CanvasSize = UDim2.new(0,0,0,800)
+scroll.BackgroundTransparency = 1
+scroll.ScrollBarThickness = 6
+
+-- SOM
+local clickSound = Instance.new("Sound", gui)
+clickSound.SoundId = "rbxassetid://140072726814802"
+clickSound.Volume = 1
+
+-- NOTIF
+local TweenService = game:GetService("TweenService")
+
+local notifBg = Instance.new("Frame", gui)
+notifBg.Size = UDim2.new(0, 320, 0, 50)
+notifBg.Position = UDim2.new(0.5, -160, 1, -170)
+notifBg.BackgroundColor3 = Color3.fromRGB(0,0,0)
+notifBg.BackgroundTransparency = 0.2 -- 🔥 ajustado
+notifBg.Visible = false
+Instance.new("UICorner", notifBg).CornerRadius = UDim.new(0,12)
+
+local notif = Instance.new("TextLabel", notifBg)
+notif.Size = UDim2.new(1,0,1,0)
+notif.BackgroundTransparency = 1
+notif.TextColor3 = Color3.fromRGB(0,255,0)
+notif.Text = "[✅] Success for Teleporting!"
+notif.TextScaled = true
+
+local function showNotification()
+    notifBg.Visible = true
+
+    -- RESET
+    notifBg.BackgroundTransparency = 0.8
+    notif.TextTransparency = 0
+
+    task.wait(8)
+
+    TweenService:Create(notifBg, TweenInfo.new(1), {
+        BackgroundTransparency = 1
+    }):Play()
+
+    TweenService:Create(notif, TweenInfo.new(1), {
+        TextTransparency = 1
+    }):Play()
+
+    task.wait(1)
+
+    notifBg.Visible = false
+
+    -- prepara próxima
+    notifBg.BackgroundTransparency = 0.8
+    notif.TextTransparency = 0
 end
 
 -- BOTÕES
-local baseBtn      = createButton("Teleport to Base",           50,  Color3.fromRGB(120,120,120), Color3.fromRGB(0,0,0))
-local ogBtn        = createButton("Teleport to OG Area",        120, Color3.fromRGB(255,140,0),   Color3.fromRGB(0,0,0))
-local divineBtn    = createButton("Teleport to Divine Area",    190, Color3.fromRGB(255,204,0),   Color3.fromRGB(0,0,0))
-local secretBtn    = createButton("Teleport to Secret Area",    260, Color3.fromRGB(120,120,120), Color3.fromRGB(0,0,0))
-local cosmicBtn    = createButton("Teleport to Cosmic Area",    330, Color3.fromRGB(170,0,255),   Color3.fromRGB(255,255,255))
-local mythicalBtn  = createButton("Teleport to Mythical Area",  400, Color3.fromRGB(255,100,200), Color3.fromRGB(0,0,0))
-local legendaryBtn = createButton("Teleport to Legendary Area", 470, Color3.fromRGB(255,215,0),   Color3.fromRGB(0,0,0))
-local epicBtn      = createButton("Teleport to Epic Area",      540, Color3.fromRGB(90,0,150),    Color3.fromRGB(255,255,255))
+local function createButton(text, y, color, pos)
+    local btn = Instance.new("TextButton", scroll)
+    btn.Size = UDim2.new(0, 230, 0, 55)
+    btn.Position = UDim2.new(0.5, -115, 0, y)
+    btn.Text = text
+    btn.TextScaled = true
+    btn.Font = Enum.Font.GothamBold
+    btn.BackgroundColor3 = color
+    btn.TextColor3 = Color3.fromRGB(0,0,0)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,12)
 
--- GRADIENT OG 🔥
-local gradient = Instance.new("UIGradient")
-gradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,170,0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255,80,0))
-}
-gradient.Parent = ogBtn
+    btn.MouseButton1Click:Connect(function()
+        clickSound:Stop()
+        clickSound:Play()
 
--- TELEPORT
-local function tp(pos)
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    hrp.CFrame = CFrame.new(pos + Vector3.new(0,5,0))
+        local char = player.Character or player.CharacterAdded:Wait()
+        char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(pos + Vector3.new(0,5,0))
+
+        showNotification()
+    end)
 end
 
-baseBtn.MouseButton1Click:Connect(function() tp(basePosition) end)
-ogBtn.MouseButton1Click:Connect(function() tp(ogPosition) end)
-divineBtn.MouseButton1Click:Connect(function() tp(divinePosition) end)
-secretBtn.MouseButton1Click:Connect(function() tp(secretPosition) end)
-cosmicBtn.MouseButton1Click:Connect(function() tp(cosmicPosition) end)
-mythicalBtn.MouseButton1Click:Connect(function() tp(mythicalPosition) end)
-legendaryBtn.MouseButton1Click:Connect(function() tp(legendaryPosition) end)
-epicBtn.MouseButton1Click:Connect(function() tp(epicPosition) end)
+-- BOTÕES
+createButton("Pegue o Brainrot (segure na mão)",0,Color3.fromRGB(180,180,180),brainrotPosition)
+createButton("Teleport to Base",70,Color3.fromRGB(120,120,120),basePosition)
+createButton("Teleport to Divine Area",140,Color3.fromRGB(255,140,0),divinePosition)
+createButton("Teleport to Celestial Area",210,Color3.fromRGB(255,204,0),celestialPosition)
+createButton("Teleport to Secret Area",280,Color3.fromRGB(150,150,150),secretPosition)
+createButton("Teleport to Cosmic Area",350,Color3.fromRGB(170,0,255),cosmicPosition)
+createButton("Teleport to Mythical Area",420,Color3.fromRGB(255,100,200),mythicalPosition)
+createButton("Teleport to Legendary Area",490,Color3.fromRGB(255,215,0),legendaryPosition)
+createButton("Teleport to Epic Area",560,Color3.fromRGB(90,0,150),epicPosition)
 
--- =======================
--- ARRASTAR GUI
--- =======================
+-- MINIMIZAR
+local minimized = false
+minimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    scroll.Visible = not minimized
+    frame.Size = minimized and UDim2.new(0,280,0,45) or UDim2.new(0,280,0,680)
+    minimizeBtn.Text = minimized and "+" or "-"
+end)
+
+-- ARRASTAR
 local UIS = game:GetService("UserInputService")
-local dragging = false
-local dragStart, startPos
+local dragging, dragStart, startPos
 
-frame.InputBegan:Connect(function(input)
+topBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
     end
 end)
 
@@ -142,5 +173,11 @@ UIS.InputChanged:Connect(function(input)
             startPos.Y.Scale,
             startPos.Y.Offset + delta.Y
         )
+    end
+end)
+
+topBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
     end
 end)
