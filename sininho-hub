@@ -1,17 +1,21 @@
+-- =======================
 -- POSIÇÕES
+-- =======================
 local basePosition      = Vector3.new(-819.31, 15, -385.16)
+local ogPosition        = Vector3.new(-819.57, 1217, 2617.97)
 local divinePosition    = Vector3.new(-819.57, 801, 2019.97)
 local secretPosition    = Vector3.new(-819.57, 470.5, 1485.47)
 local cosmicPosition    = Vector3.new(-819.57, 290.5, 1004.97)
 local mythicalPosition  = Vector3.new(-819.57, 165.5, 651.97)
-local legendaryPosition = Vector3.new(-819.57, 181.5, 373.97) -- MUDA SE PRECISAR
+local legendaryPosition = Vector3.new(-819.57, 94.5, 380.47) -- MUDA SE PRECISAR
 local epicPosition      = Vector3.new(-819.57, 101, 155.47)
 
 -- PLAYER
 local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
 
+-- =======================
 -- PARTS VISUAIS
+-- =======================
 local function createPart(pos, color, name)
     local p = Instance.new("Part")
     p.Size = Vector3.new(6,1,6)
@@ -25,6 +29,7 @@ local function createPart(pos, color, name)
 end
 
 createPart(basePosition, Color3.fromRGB(120,120,120), "BaseArea")
+createPart(ogPosition, Color3.fromRGB(255,140,0), "OGArea")
 createPart(divinePosition, Color3.fromRGB(0,255,255), "DivineArea")
 createPart(secretPosition, Color3.fromRGB(150,150,150), "SecretArea")
 createPart(cosmicPosition, Color3.fromRGB(170,0,255), "CosmicArea")
@@ -32,13 +37,15 @@ createPart(mythicalPosition, Color3.fromRGB(255,100,200), "MythicalArea")
 createPart(legendaryPosition, Color3.fromRGB(255,215,0), "LegendaryArea")
 createPart(epicPosition, Color3.fromRGB(90,0,150), "EpicArea")
 
--- GUI
+-- =======================
+-- GUI HUB
+-- =======================
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.CoreGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 260, 0, 550)
-frame.Position = UDim2.new(0.5, -130, 0.5, -275)
+frame.Size = UDim2.new(0, 260, 0, 620)
+frame.Position = UDim2.new(0.5, -130, 0.5, -310)
 frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 frame.BorderSizePixel = 0
 frame.Parent = gui
@@ -66,53 +73,51 @@ local function createButton(text, posY, color, textColor)
     btn.Text = text
     btn.TextScaled = true
     btn.TextColor3 = textColor
+    btn.Font = Enum.Font.GothamBold
     btn.Parent = frame
     return btn
 end
 
--- BOTÕES (BASE AGORA EM CIMA)
+-- BOTÕES
 local baseBtn      = createButton("Teleport to Base",           50,  Color3.fromRGB(120,120,120), Color3.fromRGB(0,0,0))
-local divineBtn    = createButton("Teleport to Divine Area",    120, Color3.fromRGB(255,204,0),   Color3.fromRGB(0,0,0))
-local secretBtn    = createButton("Teleport to Secret Area",    190, Color3.fromRGB(120,120,120), Color3.fromRGB(0,0,0))
-local cosmicBtn    = createButton("Teleport to Cosmic Area",    260, Color3.fromRGB(170,0,255),   Color3.fromRGB(255,255,255))
-local mythicalBtn  = createButton("Teleport to Mythical Area",  330, Color3.fromRGB(255,100,200), Color3.fromRGB(0,0,0))
-local legendaryBtn = createButton("Teleport to Legendary Area", 400, Color3.fromRGB(255,215,0),   Color3.fromRGB(0,0,0))
-local epicBtn      = createButton("Teleport to Epic Area",      470, Color3.fromRGB(90,0,150),    Color3.fromRGB(255,255,255))
+local ogBtn        = createButton("Teleport to OG Area",        120, Color3.fromRGB(255,140,0),   Color3.fromRGB(0,0,0))
+local divineBtn    = createButton("Teleport to Divine Area",    190, Color3.fromRGB(255,204,0),   Color3.fromRGB(0,0,0))
+local secretBtn    = createButton("Teleport to Secret Area",    260, Color3.fromRGB(120,120,120), Color3.fromRGB(0,0,0))
+local cosmicBtn    = createButton("Teleport to Cosmic Area",    330, Color3.fromRGB(170,0,255),   Color3.fromRGB(255,255,255))
+local mythicalBtn  = createButton("Teleport to Mythical Area",  400, Color3.fromRGB(255,100,200), Color3.fromRGB(0,0,0))
+local legendaryBtn = createButton("Teleport to Legendary Area", 470, Color3.fromRGB(255,215,0),   Color3.fromRGB(0,0,0))
+local epicBtn      = createButton("Teleport to Epic Area",      540, Color3.fromRGB(90,0,150),    Color3.fromRGB(255,255,255))
 
--- TELEPORTS
-baseBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(basePosition + Vector3.new(0,5,0))
-end)
+-- GRADIENT OG 🔥
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,170,0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255,80,0))
+}
+gradient.Parent = ogBtn
 
-divineBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(divinePosition + Vector3.new(0,5,0))
-end)
+-- TELEPORT
+local function tp(pos)
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    hrp.CFrame = CFrame.new(pos + Vector3.new(0,5,0))
+end
 
-secretBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(secretPosition + Vector3.new(0,5,0))
-end)
+baseBtn.MouseButton1Click:Connect(function() tp(basePosition) end)
+ogBtn.MouseButton1Click:Connect(function() tp(ogPosition) end)
+divineBtn.MouseButton1Click:Connect(function() tp(divinePosition) end)
+secretBtn.MouseButton1Click:Connect(function() tp(secretPosition) end)
+cosmicBtn.MouseButton1Click:Connect(function() tp(cosmicPosition) end)
+mythicalBtn.MouseButton1Click:Connect(function() tp(mythicalPosition) end)
+legendaryBtn.MouseButton1Click:Connect(function() tp(legendaryPosition) end)
+epicBtn.MouseButton1Click:Connect(function() tp(epicPosition) end)
 
-cosmicBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(cosmicPosition + Vector3.new(0,5,0))
-end)
-
-mythicalBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(mythicalPosition + Vector3.new(0,5,0))
-end)
-
-legendaryBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(legendaryPosition + Vector3.new(0,5,0))
-end)
-
-epicBtn.MouseButton1Click:Connect(function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(epicPosition + Vector3.new(0,5,0))
-end)
-
+-- =======================
 -- ARRASTAR GUI
+-- =======================
 local UIS = game:GetService("UserInputService")
 local dragging = false
-local dragStart
-local startPos
+local dragStart, startPos
 
 frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
